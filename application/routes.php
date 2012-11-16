@@ -39,51 +39,7 @@ Route::get('/', function()
 
 Route::controller(Controller::detect());
 
-//creating db tables
-Route::any('schema', function()
-{
-	//users
-	Schema::create('users', function($table){
-		$table->create();
-		$table->increments('id');
-		$table->string('email');
-		$table->string('password', 32);
-		$table->string('website')->nullable();
-		$table->text('blurb')->nullable();
-		$table->string('address1')->nullable();
-		$table->string('address2')->nullable();
-		$table->string('postcode', 10)->nullable();
-		$table->string('city')->nullable();
-		$table->string('country')->nullable();
-		$table->string('phone_number')->nullable();
-		$table->timestamps();
-		$table->primary('id');
-		$table->unique('email');
-	});
-	
-	//topics
-	Schema::create('topics', function($table) {
-		$table->create();
-		$table->increments('id');
-		$table->string('title');
-		$table->text('description');
-		$table->foreign('poster_id')->references('id')->on('users');
-		$table->timestamps();
-		$table->primary('id');
-	});
-	
-	
-	//issues
-	Schema::create('issues', function($table) {
-		$table->create();
-		$table->increments('id');
-		$table->string('title');
-		$table->text('description');
-		$table->foreign('poster_id')->references('id')->on('users');
-		$table->timestamps();
-		$table->primary('id');
-	});
-});
+
 
 /*
 |--------------------------------------------------------------------------
