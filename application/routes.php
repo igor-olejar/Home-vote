@@ -34,66 +34,55 @@
 
 Route::get('/', function()
 {
-	$posts = Post::with('user')->order_by('updated_at', 'desc')->paginate(5);
-	return View::make('home')->with('posts', $posts);
+	return View::make('home.index');
 });
 
-Route::get('admin', array('before'=>'auth', 'do'=>function() {
-	$user = Auth::user();
-	return View::make('new')->with('user', $user);
-}));
+Route::controller(Controller::detect());
 
-Route::delete('post/(:num)', array('before'=>'auth', 'do'=>function($id){
-	$delete_post = Post::with('user')->find($id);
-	$delete_post->delete();
-	return Redirect::to('/')->with('success_message', true);
-}));
-
-Route::post('admin', array('before'=>'auth', 'do'=>function(){
-	$new_post = array(
-		'post_title'	=>	Input::get('post_title'),
-		'post_body'	=>	Input::get('post_body'),
-		'post_author'	=>	Input::get('post_author')
-	);
-
-	$rules = array(
-		'post_title'	=>	'required|min:3|max:255',
-		'post_body'	=>	'required|min:10'
-	);
-
-	$validation = Validator::make($new_post, $rules);
-	if ($validation->fails()) {
-		return Redirect::to('admin')
-			->with('user', Auth::user())
-			->with_errors($validation)
-			->with_input();
-	}
-
-	$post = new Post($new_post);
-	$post->save();
-	return Redirect::to('/');
-}));
-
-Route::get('login', function(){
-	return View::make('login');
-});
-
-Route::post('login', function(){
-	$userinfo = array(
-		'username'	=>	Input::get('username'),
-		'password'	=>	Input::get('password')
-	);
-
-	if (Auth::attempt($userinfo)) {
-		return Redirect::to('admin');
-	} else {
-		return Redirect::to('login')->with('login_errors', true);
-	}
-});
-
-Route::get('logout', function(){
-	Auth::logout();
-	return Redirect::to('/');
+//creating db tables
+Route::any('schema', function()
+{
+	//users
+	Schema::create('users', function($table){
+		$table->create();
+		$table->increments('id');
+		$table->string('email');
+		$table->string('password', 32);
+		$table->string('website')->nullable();
+		$table->text('blurb')->nullable();
+		$table->string('address1')->nullable();
+		$table->string('address2')->nullable();
+		$table->string('postcode', 10)->nullable();
+		$table->string('city')->nullable();
+		$table->string('country')->nullable();
+		$table->string('phone_number')->nullable();
+		$table->timestamps();
+		$table->primary('id');
+		$table->unique('email');
+	});
+	
+	//topics
+	Schema::create('topics', function($table) {
+		$table->create();
+		$table->increments('id');
+		$table->string('title');
+		$table->text('description');
+		$table->foreign('poster_id')->references('id')->on('users');
+		$table->timestamps();
+		$table->primary('id');
+	});
+	
+	
+	//issues
+	Schema::create('issues', function($table) {
+		$table->create();
+		$table->increments('id');
+		$table->string('title');
+		$table->text('description');
+		$table->foreign('poster_id')->references('id')->on('users');
+		$table->timestamps();
+		$table->primary('id');
+	});
 });
 
 /*
