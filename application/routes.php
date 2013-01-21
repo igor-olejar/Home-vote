@@ -32,12 +32,55 @@
 |
 */
 
-Route::get('/', function()
+Route::get('/', array('before'=>'auth'),function()
 {
-	return View::make('home.index');
+	//return View::make('user.dashboard');
+        return Redirect::to('user/dashboard');
 });
 
-Route::controller(Controller::detect());
+/* LOGIN ROUTE */
+Route::get('login', function()
+{
+    return View::make('login');
+});
+
+Route::post('login', function()
+{
+    $credentials = array(
+       'username'   =>  Input::get('username'),
+        'password'  =>  Input::get('password')
+    );
+    
+    if (Auth::attempt($credentials)) {
+        return Redirect::to('user/dashboard');
+    } else {
+        Session::flash('login_error', 'The username and password provided do not match. Try again.');
+        return View::make('login');
+    }
+    
+});
+
+Route::get('signup', function(){
+    return Redirect::to('login');
+});
+
+Route::get('resetpwd', function(){
+    return Redirect::to('login');
+});
+
+/* LOGOUT ROUTE */
+Route::get('logout', function(){
+    Auth::logout();
+    return Redirect::to('login');
+});
+
+/* USER ROUTES */
+Route::get('user/dashboard', function()
+{
+    return View::make('user.dashboard');
+});
+
+//Route::controller(Controller::detect());
 
 
 
@@ -111,5 +154,7 @@ Route::filter('csrf', function()
 
 Route::filter('auth', function()
 {
-	if (Auth::guest()) return Redirect::to('login');
+	if (Auth::guest()) {
+          return Redirect::to('login');  
+        }
 });

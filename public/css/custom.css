@@ -1,0 +1,19 @@
+/* 
+    Document   : custom
+    Created on : Jan 21, 2013, 12:26:11 PM
+    Author     : Igor Olejar <igor.olejar@gmail.com>
+    Description:
+        Custom styles
+*/
+
+root { 
+    display: block;
+}
+
+.navbar-login {
+    background-color: rgb(245, 243, 243);
+    height: 140px;
+    margin-bottom: 20px;
+    padding-top: 25px;
+}
+

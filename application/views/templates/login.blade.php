@@ -15,11 +15,10 @@
     </style>
     {{ Asset::container('bootstrapper')->scripts(); }}
 </head>
-<body>
-     <div class="navbar navbar-fixed-top">
-      <?php echo HTML::link('logout', 'Log Out'); ?>
+<body style="padding-top: 0;">    
+    <div class="navbar-login">
+        @yield('navbar-login')
     </div>
-    
  
     <div class="container">
           <div class="row">
@@ -29,7 +28,7 @@
  
     <div class="container">
         <footer>
-            footer
+            HoveVote project &copy; 2013
         </footer>
       </div>
 </body>
