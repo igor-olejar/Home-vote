@@ -16,6 +16,7 @@ class Create_Users {
 			$table->string('name', 128);
                         $table->string('email', 255);
                         $table->integer('group');
+                        $table->boolean('active');
 			$table->timestamps();
 		});
 

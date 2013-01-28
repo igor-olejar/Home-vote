@@ -59,20 +59,20 @@ Route::post('login', function()
     }
     
 });
+/*********************************/
 
+/*SIGN UP ROUTE */
 Route::get('signup', function(){
     return View::make('signup');
 });
 
 Route::post('signup', function(){
     $input = Input::all();
-    //print_r($input);
     
     //check if user already exists
     $user_check = User::where('email','=',$input['email'])->first();
     
     /***************************/
-    die('To do: add column "active" to user table. When signup submitted, save the info as "not active". Moderator will activate the user and automatically send the new password.');
     
     if (!$user_check) {
         $rules = array(
@@ -83,8 +83,16 @@ Route::post('signup', function(){
         $validation = Validator::make($input, $rules);
         
         if ($validation->fails()) {
-            return $validation->errors();
+            Session::flash('validation_errors', $validation->errors);
+            return View::make('signup');
         } else {
+            $user = new User();
+            $user->email = $input['email'];
+            $user->username = $input['username'];
+            $user->password = Hash::make('sdlD3%!!asdflkj32rdsfjSAD£');
+            $user->name = "";
+            $user->group = 3;
+            $user->save();
             return View::make('signup_ok');
         }
     } else {
@@ -92,22 +100,63 @@ Route::post('signup', function(){
         return View::make('signup');
     }
 });
+/*********************************/
 
-Route::get('resetpwd', function(){
-    return Redirect::to('login');
+/*RESET PASSWORD ROUTES */
+Route::get('resetpwd/(:any?)', function($token = FALSE){
+    $msg = "";
+    
+    if ($token) {
+        $new_pwd = Customfunctions::resetPwd($token);
+        mail($new_pwd['email'], 'New password', 'Your new password is:<br />' . $new_pwd['pwd']);
+        $msg = "Your new password has been emailed to you.";
+    }
+    
+    //Customfunctions::resetAdminPwd();
+    return View::make('resetpwd')->with('msg', $msg);
 });
+
+Route::post('resetpwd', function(){
+    $input = Input::get('email');
+    
+    //check if such user exists
+    $user_check = User::where('email','=',$input)->first();
+    
+    if ($user_check) {
+        $token = new Token();
+        $token->value = Customfunctions::emailToken();
+        $token->type = 'email';
+        $token->user_id = $user_check->attributes['id'];
+        $token->used = 0;
+        $token->save();
+        
+        //email the info
+        /* @todo figure out how to get the Messages bundle */
+        $message = URL::current() . '/token/' . $token->value;
+        mail($input, 'Reset password', 'Click here to reset password:<br />$message');
+        
+        
+        return View::make('resetpwd_ok');
+    } else {
+        Session::flash('no_user', 'The given email address does not match any user on our records.');
+        return View::make('resetpwd');
+    }
+});
+/*********************************/
 
 /* LOGOUT ROUTE */
 Route::get('logout', function(){
     Auth::logout();
     return Redirect::to('login');
 });
+/*********************************/
 
 /* USER ROUTES */
 Route::get('user/dashboard', function()
 {
     return View::make('user.dashboard');
 });
+/*********************************/
 
 //Route::controller(Controller::detect());
 

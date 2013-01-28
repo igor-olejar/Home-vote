@@ -11,17 +11,17 @@
 @endsection
 
 @section('content')
-@if (Session::get('login_error'))
+@if (Session::get('user_exists'))
 <div class="row">
     <div class="span5 offset4 alert alert-error" id="login-error">
-        {{ Session::get('login_error'); }}
+        {{ Session::get('user_exists'); }}
     </div>
 </div>
 @endif
 <div class="span4 offset4 well">
 {{ Form::open('signup')  }}
-	@if (Session::has('login_errors'))
-		{{ Alert::error("Username or password incorrect.")  }}
+	@if (Session::has('validation_errors'))
+		{{ Alert::error("Invalid username or email address.")  }}
 	@endif
 	<p>{{ Form::label('username', 'Username')  }}</p>
 	<p>{{ Form::text('username')  }}</p>
