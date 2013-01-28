@@ -14,13 +14,17 @@ class Create_Users {
 			$table->string('username', 64);
 			$table->string('password', 64);
 			$table->string('name', 128);
+                        $table->string('email', 255);
+                        $table->integer('group');
 			$table->timestamps();
 		});
 
 		DB::table('users')->insert(array(
 			'username'	=>	'admin',
 			'password'	=>	Hash::make('password'),
-			'name'		=>	'Admin'
+			'name'		=>	'Admin',
+                        'email'         =>      'igor.olejar@gmail.com',
+                        'group'         =>      1
 		));
 	}
 

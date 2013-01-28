@@ -61,7 +61,36 @@ Route::post('login', function()
 });
 
 Route::get('signup', function(){
-    return Redirect::to('login');
+    return View::make('signup');
+});
+
+Route::post('signup', function(){
+    $input = Input::all();
+    //print_r($input);
+    
+    //check if user already exists
+    $user_check = User::where('email','=',$input['email'])->first();
+    
+    /***************************/
+    die('To do: add column "active" to user table. When signup submitted, save the info as "not active". Moderator will activate the user and automatically send the new password.');
+    
+    if (!$user_check) {
+        $rules = array(
+            'username'  => 'required',
+            'email'     =>  'required|email'
+        );
+        
+        $validation = Validator::make($input, $rules);
+        
+        if ($validation->fails()) {
+            return $validation->errors();
+        } else {
+            return View::make('signup_ok');
+        }
+    } else {
+        Session::flash('user_exists', 'The given email address already exists in the database');
+        return View::make('signup');
+    }
 });
 
 Route::get('resetpwd', function(){
