@@ -15,21 +15,26 @@
     </style>
     {{ Asset::container('bootstrapper')->scripts(); }}
 </head>
-<body style="padding-top: 0;">    
+<body class="cloud-body">    
     <div class="navbar-login">
-        @yield('navbar-login')
+        <div class="container">
+            <div class="row">
+                <div class="span4">
+                <a href="/" class="btn-navbar">
+                    Home<strong>Vote</strong>
+                </a>
+                </div>
+                <div class="span2 offset6">
+                    Community Name
+                </div>
+            </div>
+        </div>
     </div>
  
     <div class="container">
-          <div class="row">
-          @yield('content')
-          </div>
+        @yield('content')
     </div><!--/container-->
  
-    <div class="container">
-        <footer>
-            HoveVote project &copy; 2013
-        </footer>
-      </div>
+    @include('templates.footer')
 </body>
 </html>

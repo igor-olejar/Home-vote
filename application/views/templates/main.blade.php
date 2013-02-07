@@ -16,21 +16,51 @@
     {{ Asset::container('bootstrapper')->scripts(); }}
 </head>
 <body>
-     <div class="navbar navbar-fixed-top">
-      <?php echo HTML::link('logout', 'Log Out'); ?>
+     <div class="navbar navbar-fixed-top" style="margin-bottom: 0;">
+         <div class="navbar-inner" id="main-navbar">
+             <div class="container">
+                 <div class="span8 first">
+                     <strong>Community Name</strong>
+                 </div>
+                 <div class="span1">
+                     Community
+                 </div>
+                 <div class="span1">
+                     My Activity
+                 </div>
+                 <div class="span1">
+                     Edit profile
+                 </div>
+                 <div class="span1">
+                    {{ HTML::link('logout', 'Log Out') }}
+                 </div>
+             </div>
+         </div>
+    </div>
+    
+    <div id="subnav" class="clearfix">
+        <div class="container">
+            <div class="span2 first" id="large-avatar">
+                {{ HTML::image('img/user_dashboard/default_image.jpg', 'User Name', array('id'=>'large-avatar-img')) }}
+            </div>
+            <div class="span9" style="padding-top: 8px;">
+                <h1>Hello User Name.</h1>
+                <h4>You have <a href="#" class="blue-accent">1</a> new message(s).</h4>
+                <h4>
+                    There have been <a href="#" class="blue-accent" >3</a> new voting topic(s) and 
+                    <a href="#" class="blue-accent">1</a> new discussion topic(s) since your last visit.
+                </h4>
+            </div>
+            <div class="span1">
+                arrow
+            </div>
+        </div>
     </div>
     
  
-    <div class="container">
-          <div class="row">
-          @yield('content')
-          </div>
-    </div><!--/container-->
+    @yield('content')
  
-    <div class="container">
-        <footer>
-            footer
-        </footer>
-      </div>
+
+    @include('templates.footer')
 </body>
 </html>
