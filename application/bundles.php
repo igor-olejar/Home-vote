@@ -35,7 +35,21 @@
 
 return array(
 
-	'docs' => array('handles' => 'docs'),
-	'bootstrapper'	=> array('auto'=>true),
+	'docs'          =>  array('handles' => 'docs'),
+	'bootstrapper'	=>  array('auto'=>true),
+        'admin'         =>  array(
+                            'location'      =>  'admin',
+                            'autoloads'     =>  array(
+                                    'map'   =>  array(
+                                        'Admin' =>  '(:bundle)/admin.php',
+                                    ),
+                                    'namespaces'    =>  array(
+                                        'Admin' =>  '(:bundle)/lib',
+                                    ),
+                                    'directories'   =>  array(
+                                        '(:bundle)/models'
+                                    ),
+                                ),
+                            ),
 
 );

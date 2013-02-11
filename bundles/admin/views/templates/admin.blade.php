@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Homevote - {{ Session::get('community')->community_name }}</title>
+    <title>Homevote - {{ $community->community_name }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -20,10 +20,10 @@
          <div class="navbar-inner" id="main-navbar">
              <div class="container">
                  <div class="span8 first">
-                     <strong>{{ HTML::link('/', Session::get('community')->community_name, array('class'=>'header-link')) }}</strong>
+                     <strong>{{ $community->community_name }}</strong>
                  </div>
                  <div class="span1">
-                        {{ HTML::link('community/overview', 'Community', array('class'=>'header-link')) }}
+
                  </div>
                  <div class="span1">
                      My Activity
@@ -44,7 +44,7 @@
                 {{ HTML::image('img/user_dashboard/default_image.jpg', 'User Name', array('id'=>'large-avatar-img')) }}
             </div>
             <div class="span9" style="padding-top: 8px;">
-                <h1>Hello {{ Session::get('user')->name }}.</h1>
+                <h1>Hello User Name.</h1>
                 <h4>You have <a href="#" class="blue-accent">1</a> new message(s).</h4>
                 <h4>
                     There have been <a href="#" class="blue-accent" >3</a> new voting topic(s) and 

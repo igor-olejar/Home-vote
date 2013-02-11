@@ -163,3 +163,13 @@ footer {
 .topic-large p, .topic-small p {
     font-size: 11px;
 }
+
+#overview-clouds {
+    height: 111px;
+    background: url('/img/community-clouds.jpg') no-repeat top left;
+    background-size: 100%;
+    color: white;
+    font-size: 23px;
+    padding-left: 33px;
+    padding-top: 450px;
+}

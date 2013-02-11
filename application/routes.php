@@ -32,7 +32,8 @@
 |
 */
 
-Route::get('/', array('before'=>'auth'),function()
+//Route::get('/', array('before'=>'auth'), function()
+Route::get('/', function()
 {
 	//return View::make('user.dashboard');
         return Redirect::to('user/dashboard');
@@ -41,21 +42,29 @@ Route::get('/', array('before'=>'auth'),function()
 /* LOGIN ROUTE */
 Route::get('login', function()
 {
-    return View::make('login');
+    //get the community name
+    $community = Community::find(1);
+    return View::make('login')->with('community_name', $community->community_name);
 });
 
 Route::post('login', function()
 {
     $credentials = array(
-       'username'   =>  Input::get('username'),
+        'username'   =>  Input::get('username'),
         'password'  =>  Input::get('password')
     );
     
+    //get the community name
+    $community = Community::find(1);
+    
     if (Auth::attempt($credentials)) {
+        //save user to Session
+        Session::put('user', Auth::user());
+        Session::put('community', $community);
         return Redirect::to('user/dashboard');
     } else {
-        Session::flash('login_error', 'The username and password provided do not match. Try again.');
-        return View::make('login');
+        Session::flash('login_error', 'The username and password provided do not match, or you have not yet been approved by the administrator. Try again.');
+        return View::make('login')->with('community_name', $community->community_name);
     }
     
 });
@@ -63,7 +72,9 @@ Route::post('login', function()
 
 /*SIGN UP ROUTE */
 Route::get('signup', function(){
-    return View::make('signup');
+    //get the community name
+    $community = Community::find(1);
+    return View::make('signup')->with('community_name', $community->community_name);
 });
 
 Route::post('signup', function(){
@@ -73,7 +84,8 @@ Route::post('signup', function(){
     $user_check = User::where('email','=',$input['email'])->first();
     
     /***************************/
-    
+    //get the community name
+    $community = Community::find(1);
     if (!$user_check) {
         $rules = array(
             'username'  => 'required',
@@ -93,11 +105,11 @@ Route::post('signup', function(){
             $user->name = "";
             $user->group = 3;
             $user->save();
-            return View::make('signup_ok');
+            return View::make('signup_ok')->with('community_name', $community->community_name);
         }
     } else {
         Session::flash('user_exists', 'The given email address already exists in the database');
-        return View::make('signup');
+        return View::make('signup')->with('community_name', $community->community_name);
     }
 });
 /*********************************/
@@ -112,8 +124,13 @@ Route::get('resetpwd/(:any?)', function($token = FALSE){
         $msg = "Your new password has been emailed to you.";
     }
     
+    //get the community name
+    $community = Community::find(1);
+    
     //Customfunctions::resetAdminPwd();
-    return View::make('resetpwd')->with('msg', $msg);
+    return View::make('resetpwd')
+            ->with('msg', $msg)
+            ->with('community_name', $community->community_name);
 });
 
 Route::post('resetpwd', function(){
@@ -122,6 +139,8 @@ Route::post('resetpwd', function(){
     //check if such user exists
     $user_check = User::where('email','=',$input)->first();
     
+    //get the community name
+    $community = Community::find(1);
     if ($user_check) {
         $token = new Token();
         $token->value = Customfunctions::emailToken();
@@ -136,31 +155,60 @@ Route::post('resetpwd', function(){
         mail($input, 'Reset password', 'Click here to reset password:<br />$message');
         
         
-        return View::make('resetpwd_ok');
+        return View::make('resetpwd_ok')->with('community_name', $community->community_name);
     } else {
         Session::flash('no_user', 'The given email address does not match any user on our records.');
-        return View::make('resetpwd');
+        return View::make('resetpwd')->with('community_name', $community->community_name);
     }
 });
 /*********************************/
 
 /* LOGOUT ROUTE */
 Route::get('logout', function(){
+    Session::forget('user');
+    Session::forget('community');
     Auth::logout();
-    return Redirect::to('login');
+    
+    //get the community name
+    $community = Community::find(1);
+    return Redirect::to('login')->with('community_name', $community->community_name);
 });
 /*********************************/
 
 /* USER ROUTES */
 Route::get('user/dashboard', function()
 {
+    var_dump(Session::get('user'));die();
+    //start the admin bundle if the user is in the admin group
+    if (Session::get('user')->group == 1) {
+        Bundle::start('admin');
+    }
+    
     return View::make('user.dashboard');
+});
+
+//Route::get('community/overview', array('before'=>'auth'), function(){
+Route::get('community/overview', function(){
+    return View::make('user.community_overview');
 });
 /*********************************/
 
 //Route::controller(Controller::detect());
 
-
+/* ADMIN CONTROLLERS */
+//Route::controller('admin::test');
+//Route::get('admin/test', 'admin::test@index');
+//
+//Route::get('admin/overview', function(){
+//    //check if user is admin
+//    if (Auth::user()->group == 1) {
+//        $community = Community::find(1);
+//        return View::make('admin::overview')->with('community', $community);
+//    } else {
+//        return Redirect::to('user/dashboard');
+//    }
+//});
+/*********************************/
 
 /*
 |--------------------------------------------------------------------------

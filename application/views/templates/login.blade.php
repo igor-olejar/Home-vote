@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Homevote</title>
+    <title>Homevote - {{ $community_name }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -25,7 +25,7 @@
                 </a>
                 </div>
                 <div class="span2 offset6">
-                    Community Name
+                    {{ $community_name }}
                 </div>
             </div>
         </div>
