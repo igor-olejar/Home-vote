@@ -32,12 +32,12 @@
 |
 */
 
-//Route::get('/', array('before'=>'auth'), function()
-Route::get('/', function()
-{
-	//return View::make('user.dashboard');
-        return Redirect::to('user/dashboard');
-});
+//Register admin routes
+Route::controller('admin');
+
+Route::get('/', array('before' => 'auth', 'do' => function(){
+    return Laravel\Redirect::to('user/dashboard');
+}));
 
 /* LOGIN ROUTE */
 Route::get('login', function()
@@ -178,10 +178,10 @@ Route::get('logout', function(){
 /* USER ROUTES */
 Route::get('user/dashboard', function()
 {
-    var_dump(Session::get('user'));die();
     //start the admin bundle if the user is in the admin group
-    if (Session::get('user')->group == 1) {
-        Bundle::start('admin');
+    if (Session::has('user') && Session::get('user')->group == 1) {
+//        Bundle::start('admin');
+      
     }
     
     return View::make('user.dashboard');
@@ -191,23 +191,6 @@ Route::get('user/dashboard', function()
 Route::get('community/overview', function(){
     return View::make('user.community_overview');
 });
-/*********************************/
-
-//Route::controller(Controller::detect());
-
-/* ADMIN CONTROLLERS */
-//Route::controller('admin::test');
-//Route::get('admin/test', 'admin::test@index');
-//
-//Route::get('admin/overview', function(){
-//    //check if user is admin
-//    if (Auth::user()->group == 1) {
-//        $community = Community::find(1);
-//        return View::make('admin::overview')->with('community', $community);
-//    } else {
-//        return Redirect::to('user/dashboard');
-//    }
-//});
 /*********************************/
 
 /*
